@@ -1,4 +1,11 @@
-<?php while (have_posts()) : the_post(); ?>
+<?php
+use Roots\Sage\Setup;
+
+if (!Setup\display_sidebar()) :
+  echo '<div class="container">';
+endif;
+
+while (have_posts()) : the_post(); ?>
   <article <?php post_class(); ?>>
     <header>
       <h1 class="entry-title"><?php the_title(); ?></h1>
@@ -12,4 +19,9 @@
     </footer>
     <?php comments_template('/templates/comments.php'); ?>
   </article>
-<?php endwhile; ?>
+<?php
+endwhile;
+
+if (!Setup\display_sidebar()) :
+  echo '</div>';
+endif; ?>

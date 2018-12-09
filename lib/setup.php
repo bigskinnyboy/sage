@@ -7,7 +7,8 @@ use Roots\Sage\Assets;
 /**
  * Theme setup
  */
-function setup() {
+function setup()
+{
   // Enable features from Soil when plugin is activated
   // https://roots.io/plugins/soil/
   add_theme_support('soil-clean-up');
@@ -36,9 +37,13 @@ function setup() {
   // http://codex.wordpress.org/Function_Reference/add_image_size
   add_theme_support('post-thumbnails');
 
+  // Gutenberg
+  add_theme_support('editor-styles');
+  add_theme_support('wp-block-styles');
+
   // Enable post formats
   // http://codex.wordpress.org/Post_Formats
-  add_theme_support('post-formats', ['aside', 'gallery', 'link', 'image', 'quote', 'video', 'audio']);
+  // add_theme_support('post-formats', ['aside', 'gallery', 'link', 'image', 'quote', 'video', 'audio']);
 
   // Enable HTML5 markup support
   // http://codex.wordpress.org/Function_Reference/add_theme_support#HTML5
@@ -53,39 +58,40 @@ add_action('after_setup_theme', __NAMESPACE__ . '\\setup');
 /**
  * Register sidebars
  */
-function widgets_init() {
+function widgets_init()
+{
   register_sidebar([
-    'name'          => __('Primary', 'sage'),
-    'id'            => 'sidebar-primary',
+    'name' => __('Primary', 'sage'),
+    'id' => 'sidebar-primary',
     'before_widget' => '<section class="widget %1$s %2$s">',
-    'after_widget'  => '</section>',
-    'before_title'  => '<h3>',
-    'after_title'   => '</h3>'
+    'after_widget' => '</section>',
+    'before_title' => '<h3>',
+    'after_title' => '</h3>'
   ]);
 
   register_sidebar([
-    'name'          => __('Footer', 'sage'),
-    'id'            => 'sidebar-footer',
+    'name' => __('Footer', 'sage'),
+    'id' => 'sidebar-footer',
     'before_widget' => '<section class="widget %1$s %2$s">',
-    'after_widget'  => '</section>',
-    'before_title'  => '<h3>',
-    'after_title'   => '</h3>'
+    'after_widget' => '</section>',
+    'before_title' => '<h3>',
+    'after_title' => '</h3>'
   ]);
 }
 add_action('widgets_init', __NAMESPACE__ . '\\widgets_init');
 
 /**
- * Determine which pages should NOT display the sidebar
+ * Determine which pages should display the sidebar
  */
-function display_sidebar() {
+function display_sidebar()
+{
   static $display;
 
-  isset($display) || $display = !in_array(true, [
-    // The sidebar will NOT be displayed if ANY of the following return true.
+  isset($display) || $display = in_array(true, [
+    // The sidebar will be displayed if ANY of the following return true.
     // @link https://codex.wordpress.org/Conditional_Tags
-    is_404(),
-    is_front_page(),
-    is_page_template('template-custom.php'),
+    is_home(),
+    is_single(),
   ]);
 
   return apply_filters('sage/display_sidebar', $display);
@@ -94,7 +100,8 @@ function display_sidebar() {
 /**
  * Theme assets
  */
-function assets() {
+function assets()
+{
   wp_enqueue_style('sage/css', Assets\asset_path('styles/main.css'), false, null);
 
   if (is_single() && comments_open() && get_option('thread_comments')) {
